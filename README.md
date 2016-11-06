@@ -3,7 +3,7 @@ This is a danger plugin to check for undocumented symbols via Jazzy.
 
 <blockquote>Warn about undocumented symbols.
   <pre>
-jazzy.warn</pre>
+jazzy.warn_of_undocumented</pre>
 </blockquote>
 
 <blockquote>Write a custom message for undocumented symbols.
