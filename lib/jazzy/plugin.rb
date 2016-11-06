@@ -22,9 +22,9 @@ module Danger
     attr_accessor :path_to_docs
 
     # Warns about undocumented symbols.
-    def warn
+    def warn_of_undocumented
       undocumented do |file,line|
-        warn(DEFAULT_MESSAGE, file: file, line: line)
+        warn DEFAULT_MESSAGE, file: file, line: line
       end
     end
 
@@ -32,20 +32,18 @@ module Danger
     # @yieldparam [String] name of the file
     # @yieldparam [String] the line where the symbol is found
     def undocumented
-      working_path = Pathname.new(Dir.getwd)
       file = File.read( File.join(docs_path, 'undocumented.json') )
       data = JSON.parse(file)
-
-      modified_files = (git.modified_files + git.added_files)
+      working_path = Pathname.new(data['source_directory'])
 
       data['warnings'].each do |item|
         next unless item['warning'] == 'undocumented'
 
         path = Pathname.new(item['file'])
-        file = path.relative_path_from(working_path)
+        file = path.relative_path_from(working_path).to_s
         next unless files_of_interest.include?(file)
 
-        yield (file, item['line'])
+        yield(file, item['line'])
       end
     end
 

@@ -15,27 +15,38 @@ module Danger
         @my_plugin = @dangerfile.jazzy
       end
 
-      # Some examples for writing tests
-      # You should replace these with your own.
+      context "changed files contains undocumented symbols" do
+        before do
+          modified = Git::Diff::DiffFile.new(
+            "base",
+            path:  "OldFile.swift",
+            patch: "- //old"
+          )
+          added = Git::Diff::DiffFile.new(
+            "base",
+            path:  "MyFile.swift",
+            patch: "+ //new"
+          )
 
-      it "Warns on a monday" do
-        monday_date = Date.parse("2016-07-11")
-        allow(Date).to receive(:today).and_return monday_date
+          allow(@dangerfile.git).to receive(:diff_for_file)
+            .with("OldFile.swift").and_return(modified)
 
-        @my_plugin.warn_on_mondays
+          allow(@dangerfile.git).to receive(:diff_for_file)
+            .with("MyFile.swift").and_return(added)
 
-        expect(@dangerfile.status_report[:warnings]).to eq(["Trying to merge code on a Monday"])
+          allow(@dangerfile.git).to receive(:modified_files)
+            .and_return(["OldFile.swift"])
+
+          allow(@dangerfile.git).to receive(:added_files)
+            .and_return(["MyFile.swift"])
+        end
+
+        it "Warns on undocumented symbols" do
+          @my_plugin.path_to_docs = 'spec/fixtures'
+          @my_plugin.warn_of_undocumented
+          expect(@dangerfile.status_report[:warnings]).to eq(["Undocumented symbol."])
+        end
       end
-
-      it "Does nothing on a tuesday" do
-        monday_date = Date.parse("2016-07-12")
-        allow(Date).to receive(:today).and_return monday_date
-
-        @my_plugin.warn_on_mondays
-
-        expect(@dangerfile.status_report[:warnings]).to eq([])
-      end
-
     end
   end
 end

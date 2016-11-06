@@ -1,0 +1,19 @@
+{
+  "warnings": [
+    {
+      "file": "/MyFile.swift",
+      "line": 4,
+      "symbol": "MyClass.doStuff()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/MyOtherFile.swift",
+      "line": 2,
+      "symbol": "MyStruct.handleThing()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/"
+}
