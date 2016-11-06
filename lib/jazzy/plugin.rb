@@ -63,6 +63,5 @@ module Danger
     def files_of_interest
       git.modified_files + git.added_files
     end
-
   end
 end
