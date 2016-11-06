@@ -22,6 +22,7 @@ module Danger
     attr_accessor :path_to_docs
 
     # Warns about undocumented symbols.
+    # @return  [void]
     def warn_of_undocumented
       undocumented do |file, line|
         warn DEFAULT_MESSAGE, file: file, line: line
@@ -31,6 +32,7 @@ module Danger
     # Finds and yields information about undocumented symbols.
     # @yieldparam [String] name of the file
     # @yieldparam [String] the line where the symbol is found
+    # @return  [void]
     def undocumented
       data = undocumented_data
       working_path = Pathname.new(data['source_directory'])
