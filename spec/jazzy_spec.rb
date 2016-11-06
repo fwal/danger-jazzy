@@ -13,6 +13,7 @@ module Danger
       before do
         @dangerfile = testing_dangerfile
         @my_plugin = @dangerfile.jazzy
+        @default_message = 'Undocumented symbol.'
       end
 
       context 'changed files contains undocumented symbols' do
@@ -44,7 +45,7 @@ module Danger
         it 'Warns on undocumented symbols' do
           @my_plugin.path_to_docs = 'spec/fixtures'
           @my_plugin.warn_of_undocumented
-          expect(@dangerfile.status_report[:warnings]).to eq(['Undocumented symbol.'])
+          expect(@dangerfile.status_report[:warnings]).to eq([@default_message])
         end
       end
     end
