@@ -1,6 +1,6 @@
 # danger-jazzy
 
-A description of danger-jazzy.
+Checks for undocumented symbols from (Jazzy)[https://github.com/realm/jazzy].
 
 ## Installation
 

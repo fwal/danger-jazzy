@@ -1,33 +1,62 @@
 module Danger
-  # This is your plugin class. Any attributes or methods you expose here will
-  # be available from within your Dangerfile.
+  # This is a danger plugin to check for undocumented symbols via Jazzy.
   #
-  # To be published on the Danger plugins site, you will need to have
-  # the public interface documented. Danger uses [YARD](http://yardoc.org/)
-  # for generating documentation from your plugin source, and you can verify
-  # by running `danger plugins lint` or `bundle exec rake spec`.
+  # @example Warn about undocumented symbols.
   #
-  # You should replace these comments with a public description of your library.
+  #          jazzy.warn
   #
-  # @example Ensure people are well warned about merging on Mondays
+  # @example Write a custom message for undocumented symbols.
   #
-  #          my_plugin.warn_on_mondays
+  #          jazzy.undocumented do |file,line|
+  #              message("You forgot to document this", file:file, line:line)
+  #          end
   #
-  # @see  Frederik Wallner/danger-jazzy
-  # @tags monday, weekends, time, rattata
+  # @see  fwal/danger-jazzy
+  # @tags jazzy, docs, documentation
   #
   class DangerJazzy < Plugin
+    DEFAULT_MESSAGE = "Undocumented symbol.".freeze
 
-    # An attribute that you can read/write from your Dangerfile
-    #
-    # @return   [Array<String>]
-    attr_accessor :my_attribute
+    # Path to the docs folder, defaults to 'docs/'.
+    # @return   [String]
+    attr_accessor :path_to_docs
 
-    # A method that you can call from your Dangerfile
-    # @return   [Array<String>]
-    #
-    def warn_on_mondays
-      warn 'Trying to merge code on a Monday' if Date.today.wday == 1
+    # Warns about undocumented symbols.
+    def warn
+      undocumented do |file,line|
+        warn(DEFAULT_MESSAGE, file: file, line: line)
+      end
+    end
+
+    # Finds and yields information about undocumented symbols.
+    # @yieldparam [String] name of the file
+    # @yieldparam [String] the line where the symbol is found
+    def undocumented
+      working_path = Pathname.new(Dir.getwd)
+      file = File.read( File.join(docs_path, 'undocumented.json') )
+      data = JSON.parse(file)
+
+      modified_files = (git.modified_files + git.added_files)
+
+      data['warnings'].each do |item|
+        next unless item['warning'] == 'undocumented'
+
+        path = Pathname.new(item['file'])
+        file = path.relative_path_from(working_path)
+        next unless files_of_interest.include?(file)
+
+        yield (file, item['line'])
+      end
+    end
+
+    private
+
+    def docs_path
+      @path_to_docs || 'docs/'
+    end
+
+    def files_of_interest
+      git.modified_files + git.added_files
     end
   end
 end
