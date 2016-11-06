@@ -3,7 +3,7 @@ module Danger
   #
   # @example Warn about undocumented symbols.
   #
-  #          jazzy.warn
+  #          jazzy.warn_of_undocumented
   #
   # @example Write a custom message for undocumented symbols.
   #
