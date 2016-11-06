@@ -15,7 +15,7 @@ module Danger
   # @tags jazzy, docs, documentation
   #
   class DangerJazzy < Plugin
-    DEFAULT_MESSAGE = "Undocumented symbol.".freeze
+    DEFAULT_MESSAGE = 'Undocumented symbol.'.freeze
 
     # Path to the docs folder, defaults to 'docs/'.
     # @return   [String]
@@ -23,7 +23,7 @@ module Danger
 
     # Warns about undocumented symbols.
     def warn_of_undocumented
-      undocumented do |file,line|
+      undocumented do |file, line|
         warn DEFAULT_MESSAGE, file: file, line: line
       end
     end
@@ -32,7 +32,7 @@ module Danger
     # @yieldparam [String] name of the file
     # @yieldparam [String] the line where the symbol is found
     def undocumented
-      file = File.read( File.join(docs_path, 'undocumented.json') )
+      file = File.read(File.join(docs_path, 'undocumented.json'))
       data = JSON.parse(file)
       working_path = Pathname.new(data['source_directory'])
 
