@@ -32,8 +32,7 @@ module Danger
     # @yieldparam [String] name of the file
     # @yieldparam [String] the line where the symbol is found
     def undocumented
-      file = File.read(File.join(docs_path, 'undocumented.json'))
-      data = JSON.parse(file)
+      data = undocumented_data
       working_path = Pathname.new(data['source_directory'])
 
       data['warnings'].each do |item|
@@ -53,8 +52,17 @@ module Danger
       @path_to_docs || 'docs/'
     end
 
+    def undocumented_path
+      File.read(File.join(docs_path, 'undocumented.json'))
+    end
+
+    def undocumented_data
+      JSON.parse(undocumented_path)
+    end
+
     def files_of_interest
       git.modified_files + git.added_files
     end
+
   end
 end
