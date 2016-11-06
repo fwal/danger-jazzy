@@ -1,20 +1,26 @@
-# danger-jazzy
+### jazzy
+This is a danger plugin to check for undocumented symbols via Jazzy.
 
-Checks for undocumented symbols from (Jazzy)[https://github.com/realm/jazzy].
+<blockquote>Warn about undocumented symbols.
+  <pre>
+jazzy.warn</pre>
+</blockquote>
 
-## Installation
+<blockquote>Write a custom message for undocumented symbols.
+  <pre>
+jazzy.undocumented do |file,line|
+    message("You forgot to document this", file:file, line:line)
+end</pre>
+</blockquote>
 
-    $ gem install danger-jazzy
 
-## Usage
+#### Attributes
 
-    Methods and attributes from this plugin are available in
-    your `Dangerfile` under the `jazzy` namespace.
+`path_to_docs` - Path to the docs folder, defaults to 'docs/'.
 
-## Development
 
-1. Clone this repo
-2. Run `bundle install` to setup dependencies.
-3. Run `bundle exec rake spec` to run the tests.
-4. Use `bundle exec guard` to automatically have tests run as you make changes.
-5. Make your changes.
+#### Methods
+
+`warn_of_undocumented` - Warns about undocumented symbols.
+
+`undocumented` - Finds and yields information about undocumented symbols.
