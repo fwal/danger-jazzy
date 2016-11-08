@@ -34,17 +34,12 @@ module Danger
     # @yieldparam [String] the line where the symbol is found
     # @return  [void]
     def undocumented
-      data = undocumented_data
-      working_path = Pathname.new(data['source_directory'])
+      return unless File.exist? undocumented_path
 
-      data['warnings'].each do |item|
-        next unless item['warning'] == 'undocumented'
-
-        path = Pathname.new(item['file'])
-        file = path.relative_path_from(working_path).to_s
+      reader = UndocumentedReader.new(undocumented_path)
+      reader.undocumented_symbols do |file, line|
         next unless files_of_interest.include?(file)
-
-        yield(file, item['line'])
+        yield(file, line) if block_given?
       end
     end
 
@@ -55,11 +50,7 @@ module Danger
     end
 
     def undocumented_path
-      File.read(File.join(docs_path, 'undocumented.json'))
-    end
-
-    def undocumented_data
-      JSON.parse(undocumented_path)
+      File.join(docs_path, 'undocumented.json')
     end
 
     def files_of_interest
