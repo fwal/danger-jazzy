@@ -6,9 +6,15 @@ module Danger
     end
 
     def undocumented_symbols
-      @data['warnings'].each do |item|
+      @data['warnings'].map do |item|
         next unless item_valid? item
-        yield(item_file(item), item['line']) if block_given?
+        Symbol.new(
+          item_file(item),
+          item['line'],
+          item['symbol'],
+          item['symbol_kind'],
+          item['warning']
+        )
       end
     end
 

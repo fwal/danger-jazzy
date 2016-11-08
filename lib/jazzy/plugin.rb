@@ -24,23 +24,17 @@ module Danger
     # Warns about undocumented symbols.
     # @return  [void]
     def warn_of_undocumented
-      undocumented do |file, line|
-        warn DEFAULT_MESSAGE, file: file, line: line
+      undocumented.each do |item|
+        warn DEFAULT_MESSAGE, file: item.file, line: item.line
       end
     end
 
-    # Finds and yields information about undocumented symbols.
-    # @yieldparam [String] name of the file
-    # @yieldparam [String] the line where the symbol is found
-    # @return  [void]
+    # Returns a list of undocumented symbols in the current diff.
+    # @return [Array of symbol]
     def undocumented
       return unless File.exist? undocumented_path
-
-      reader = UndocumentedReader.new(undocumented_path)
-      reader.undocumented_symbols do |file, line|
-        next unless files_of_interest.include?(file)
-        yield(file, line) if block_given?
-      end
+      load_undocumented if @undocumented.nil?
+      @undocumented
     end
 
     private
@@ -55,6 +49,13 @@ module Danger
 
     def files_of_interest
       git.modified_files + git.added_files
+    end
+
+    def load_undocumented
+      reader = UndocumentedReader.new(undocumented_path)
+      @undocumented = reader.undocumented_symbols.select do |item|
+        files_of_interest.include?(item.file)
+      end
     end
   end
 end
