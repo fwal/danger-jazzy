@@ -3,3 +3,4 @@ pkg
 .idea/
 .yardoc/
 Gemfile.lock
+coverage/

@@ -9,6 +9,9 @@ require 'pry'
 require 'rspec'
 require 'danger'
 
+require 'coveralls'
+Coveralls.wear!
+
 # Use coloured output, it's the best.
 RSpec.configure do |config|
   config.filter_gems_from_backtrace 'bundler'
