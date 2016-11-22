@@ -1,26 +1,58 @@
 ### jazzy
 This is a danger plugin to check for undocumented symbols via Jazzy.
 
-<blockquote>Warn about undocumented symbols.
+<blockquote>Fail on undocumented symbols in modified files.
   <pre>
-jazzy.warn_of_undocumented</pre>
+jazzy.check</pre>
 </blockquote>
 
-<blockquote>Write a custom message for undocumented symbols.
+<blockquote>Fail on undocumented symbols in all files.
   <pre>
-jazzy.undocumented do |file,line|
-    message("You forgot to document this", file:file, line:line)
+jazzy.check fail: :all</pre>
+</blockquote>
+
+<blockquote>Warn about undocumented symbols in modified files.
+  <pre>
+jazzy.check warn: :modified</pre>
+</blockquote>
+
+<blockquote>Write a custom message for undocumented symbols in modified files.
+  <pre>
+jazzy.undocumented.each do |item|
+    message "You forgot to document this", file:item.file, line:item.line
+end</pre>
+</blockquote>
+
+<blockquote>Write a custom message for undocumented symbols in all files.
+  <pre>
+jazzy.undocumented(:all).each do |item|
+    message "You forgot to document this", file:item.file, line:item.line
 end</pre>
 </blockquote>
 
 
 #### Attributes
 
-`path_to_docs` - Path to the docs folder, defaults to 'docs/'.
+`path` - Path to the docs folder, defaults to 'docs/'.
 
 
 #### Methods
 
-`warn_of_undocumented` - Warns about undocumented symbols.
+`check` - Checks files for modified symbols.
 
-`undocumented` - Finds and yields information about undocumented symbols.
+Takes a hash with the following keys:
+
+ * `fail`
+ * `warn`
+
+Available scopes:
+
+ * `modified`
+ * `all`
+
+`undocumented` - Returns a list of undocumented symbols in the current diff.
+
+Available scopes:
+
+ * `modified`
+ * `all`
