@@ -14,6 +14,7 @@ module Danger
         @dangerfile = testing_dangerfile
         @my_plugin = @dangerfile.jazzy
         @default_message = 'Undocumented symbol.'
+        @my_plugin.path = 'spec/fixtures'
       end
 
       context 'changed files contains undocumented symbols' do
@@ -42,10 +43,38 @@ module Danger
             .and_return(['MyFile.swift'])
         end
 
-        it 'Warns on undocumented symbols' do
-          @my_plugin.path_to_docs = 'spec/fixtures'
-          @my_plugin.warn_of_undocumented
-          expect(@dangerfile.status_report[:warnings]).to eq([@default_message])
+        it 'finds undocumented symbols only in modified files by default' do
+          expect(@my_plugin.undocumented.length).to eq(1)
+        end
+
+        it 'can find undocumented symbols in all files' do
+          expect(@my_plugin.undocumented(:all).length).to eq(2)
+        end
+
+        it 'fails on undocumented symbols only in modified files by default' do
+          @my_plugin.check
+          expect(@dangerfile.status_report[:errors]).to eq([@default_message])
+        end
+
+        it 'does not warn on undocumented symbols by default' do
+          @my_plugin.check
+          expect(@dangerfile.status_report[:warnings]).to eq([])
+        end
+
+        it 'can fail on undocumented symbols in all files' do
+          @my_plugin.check fail: :all
+          expect(@dangerfile.status_report[:errors]).to eq([@default_message, @default_message])
+        end
+
+        it 'can warn on undocumented symbols in all files' do
+          @my_plugin.check warn: :all
+          expect(@dangerfile.status_report[:warnings]).to eq([@default_message, @default_message])
+        end
+
+        it 'does not fail if there is no undocumented json' do
+          @my_plugin.path = 'spec/empty'
+          @my_plugin.check
+          expect(@dangerfile.status_report[:errors]).to eq([])
         end
       end
     end

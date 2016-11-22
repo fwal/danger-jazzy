@@ -1,14 +1,28 @@
 module Danger
   # This is a danger plugin to check for undocumented symbols via Jazzy.
   #
-  # @example Warn about undocumented symbols.
+  # @example Fail on undocumented symbols in modified files.
   #
-  #          jazzy.warn_of_undocumented
+  #          jazzy.check
   #
-  # @example Write a custom message for undocumented symbols.
+  # @example Fail on undocumented symbols in all files.
   #
-  #          jazzy.undocumented do |file,line|
-  #              message("You forgot to document this", file:file, line:line)
+  #          jazzy.check fail: :all
+  #
+  # @example Warn about undocumented symbols in modified files.
+  #
+  #          jazzy.check warn: :modified
+  #
+  # @example Write a custom message for undocumented symbols in modified files.
+  #
+  #          jazzy.undocumented.each do |item|
+  #              message "You forgot to document this", file:item.file, line:item.line
+  #          end
+  #
+  # @example Write a custom message for undocumented symbols in all files.
+  #
+  #          jazzy.undocumented(:all).each do |item|
+  #              message "You forgot to document this", file:item.file, line:item.line
   #          end
   #
   # @see  fwal/danger-jazzy
@@ -19,28 +33,48 @@ module Danger
 
     # Path to the docs folder, defaults to 'docs/'.
     # @return   [String]
-    attr_accessor :path_to_docs
+    attr_accessor :path
 
-    # Warns about undocumented symbols.
-    # @return  [void]
-    def warn_of_undocumented
-      undocumented.each do |item|
-        warn DEFAULT_MESSAGE, file: item.file, line: item.line
-      end
+    # Checks files for modified symbols.
+    #
+    # Takes a hash with the following keys:
+    #
+    #  * `fail`
+    #  * `warn`
+    #
+    # Available scopes:
+    #
+    #  * `modified`
+    #  * `all`
+    #
+    # @param [Hash] config
+    # @return [void]
+    def check(config = {})
+      @config = config
+      fail_check
+      warn_check
     end
 
     # Returns a list of undocumented symbols in the current diff.
+    #
+    # Available scopes:
+    #
+    #  * `modified`
+    #  * `all`
+    #
+    # @param [Key] scope
     # @return [Array of symbol]
-    def undocumented
-      return unless File.exist? undocumented_path
-      load_undocumented if @undocumented.nil?
-      @undocumented
+    def undocumented(scope = :modified)
+      return [] unless scope != :ignore && File.exist?(undocumented_path)
+      @undocumented = { :modified => [], :all => [] } if @undocumented.nil?
+      load_undocumented(scope) if @undocumented[scope].empty?
+      @undocumented[scope]
     end
 
     private
 
     def docs_path
-      @path_to_docs || 'docs/'
+      @path || 'docs/'
     end
 
     def undocumented_path
@@ -51,10 +85,34 @@ module Danger
       git.modified_files + git.added_files
     end
 
-    def load_undocumented
+    def load_undocumented(scope)
       reader = UndocumentedReader.new(undocumented_path)
-      @undocumented = reader.undocumented_symbols.select do |item|
-        files_of_interest.include?(item.file)
+      @undocumented[scope] = reader.undocumented_symbols.select do |item|
+        if scope == :modified
+          files_of_interest.include?(item.file)
+        else
+          true
+        end
+      end
+    end
+
+    def fail_scope
+      @config[:fail] || :modified
+    end
+
+    def warn_scope
+      @config[:warn] || :ignore
+    end
+
+    def fail_check
+      undocumented(fail_scope).each do |item|
+        fail DEFAULT_MESSAGE, file: item.file, line: item.line
+      end
+    end
+
+    def warn_check
+      undocumented(warn_scope).each do |item|
+        warn DEFAULT_MESSAGE, file: item.file, line: item.line
       end
     end
   end
