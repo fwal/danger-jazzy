@@ -1,4 +1,8 @@
 ### jazzy
+[![Build Status](https://img.shields.io/travis/fwal/danger-jazzy.svg)](https://travis-ci.org/fwal/danger-jazzy)
+[![Coveralls](https://img.shields.io/coveralls/fwal/danger-jazzy.svg)](https://coveralls.io/github/fwal/danger-jazzy)
+[![Gem](https://img.shields.io/gem/v/danger-jazzy.svg)](http://rubygems.org/gems/danger-jazzy)
+
 This is a danger plugin to check for undocumented symbols via Jazzy.
 
 <blockquote>Fail on undocumented symbols in modified files.
