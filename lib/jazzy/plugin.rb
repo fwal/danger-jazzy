@@ -1,4 +1,5 @@
 module Danger
+  # rubocop:disable Metrics/LineLength
   # This is a danger plugin to check for undocumented symbols via Jazzy.
   #
   # @example Fail on undocumented symbols in modified files.
@@ -28,6 +29,7 @@ module Danger
   # @see  fwal/danger-jazzy
   # @tags jazzy, docs, documentation
   #
+  # rubocop:enable Metrics/LineLength
   class DangerJazzy < Plugin
     DEFAULT_MESSAGE = 'Undocumented symbol.'.freeze
 
@@ -66,7 +68,7 @@ module Danger
     # @return [Array of symbol]
     def undocumented(scope = :modified)
       return [] unless scope != :ignore && File.exist?(undocumented_path)
-      @undocumented = { :modified => [], :all => [] } if @undocumented.nil?
+      @undocumented = { modified: [], all: [] } if @undocumented.nil?
       load_undocumented(scope) if @undocumented[scope].empty?
       @undocumented[scope]
     end
@@ -106,7 +108,9 @@ module Danger
 
     def fail_check
       undocumented(fail_scope).each do |item|
+        # rubocop:disable Style/SignalException
         fail DEFAULT_MESSAGE, file: item.file, line: item.line
+        # rubocop:enable Style/SignalException
       end
     end
 

@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Jazzy::VERSION
   spec.authors       = ['Frederik Wallner']
   spec.email         = ['frederik.wallner@gmail.com']
-  spec.description   = %q{A danger plugin for validating documentation generated with jazzy}
-  spec.summary       = %q{A danger plugin for validating documentation generated with jazzy}
+  spec.description   = 'A danger plugin for validating documentation generated with jazzy'
+  spec.summary       = 'A danger plugin for validating documentation generated with jazzy'
   spec.homepage      = 'https://github.com/fwal/danger-jazzy'
   spec.license       = 'MIT'
 

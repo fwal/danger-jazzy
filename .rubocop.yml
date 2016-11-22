@@ -5,3 +5,16 @@ AllCops:
   Exclude:
     - 'spec/fixtures/**/*'
     - 'lib/danger/plugin_support/plugin_parser.rb'
+
+Metrics/LineLength:
+  Exclude:
+    - 'spec/*'
+    - 'danger-jazzy.gemspec'
+
+Style/IfUnlessModifier:
+  Exclude:
+    - 'Gemfile'
+
+Style/SpecialGlobalVars:
+  Exclude:
+    - 'danger-jazzy.gemspec'
