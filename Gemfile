@@ -4,5 +4,5 @@ source 'https://rubygems.org'
 gemspec
 
 if RUBY_VERSION == '2.3.1'
-  gem 'chandler', '~> 0.5.0'
+  gem 'chandler', '~> 0.7.0'
 end
