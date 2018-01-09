@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = '>= 2.0.0'
+  spec.required_ruby_version = '>= 2.2'
 
   spec.add_runtime_dependency 'danger-plugin-api', '~> 1.0'
   spec.add_runtime_dependency 'json', '~> 2.1.0'
@@ -31,9 +31,10 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 3.4'
 
   # Linting code and docs
+  spec.add_development_dependency 'coveralls', '~> 0.8.15'
   spec.add_development_dependency 'rubocop', '~> 0.52.1'
   spec.add_development_dependency 'yard', '~> 0.9.12'
-  spec.add_development_dependency 'coveralls', '~> 0.8.15'
+  
 
   # Makes testing easy via `bundle exec guard`
   spec.add_development_dependency 'guard', '~> 2.14'

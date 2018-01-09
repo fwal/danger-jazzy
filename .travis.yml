@@ -4,10 +4,10 @@ cache:
     - bundle
 
 rvm:
-  - 2.4.0
-  - 2.3.3
-  - 2.1.9
-  - 2.0
+  - 2.2.8
+  - 2.3.5
+  - 2.4.2
+  - ruby-head
 
 before_install:
   - gem install bundler
