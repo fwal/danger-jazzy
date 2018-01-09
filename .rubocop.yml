@@ -18,3 +18,7 @@ Style/IfUnlessModifier:
 Style/SpecialGlobalVars:
   Exclude:
     - 'danger-jazzy.gemspec'
+
+Metrics/BlockLength:
+  Exclude:
+    - "**/*_spec.rb"
