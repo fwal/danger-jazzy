@@ -22,3 +22,9 @@ Style/SpecialGlobalVars:
 Metrics/BlockLength:
   Exclude:
     - "**/*_spec.rb"
+
+Metrics/LineLength:
+  Max: 90
+
+Metrics/AbcSize:
+  Max: 20

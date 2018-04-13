@@ -1,5 +1,4 @@
 module Danger
-  # rubocop:disable Metrics/LineLength
   # This is a danger plugin to check for undocumented symbols via Jazzy.
   #
   # @example Fail on undocumented symbols in modified files.
@@ -29,13 +28,26 @@ module Danger
   # @see  fwal/danger-jazzy
   # @tags jazzy, docs, documentation
   #
-  # rubocop:enable Metrics/LineLength
   class DangerJazzy < Plugin
-    DEFAULT_MESSAGE = 'Undocumented symbol.'.freeze
+    DEFAULT_MESSAGE = 'Undocumented symbol `%<symbol>s` in *%<file>s*'.freeze
+    DEFAULT_INLINE_MESSAGE = 'Undocumented symbol `%<symbol>s`'.freeze
 
     # Path to the docs folder, defaults to 'docs/'.
     # @return   [String]
     attr_accessor :path
+
+    # List of files to ignore, defaults to [].
+    # @return   [[String]]
+    attr_accessor :ignore
+
+    # Message to display, defaults to 'Undocumented symbol `%<symbol>s` in *%<file>s*'.
+    # @return   [String]
+    attr_accessor :message
+
+    # Message to display inline,
+    # defaults to 'Undocumented symbol `%<symbol>s`'.
+    # @return   [String]
+    attr_accessor :inline_message
 
     # Checks files for modified symbols.
     #
@@ -79,6 +91,18 @@ module Danger
       @path || 'docs/'
     end
 
+    def ignored_files
+      @ignore || []
+    end
+
+    def message_template
+      @message || DEFAULT_MESSAGE
+    end
+
+    def inline_message_template
+      @inline_message || DEFAULT_INLINE_MESSAGE
+    end
+
     def undocumented_path
       File.join(docs_path, 'undocumented.json')
     end
@@ -90,6 +114,8 @@ module Danger
     def load_undocumented(scope)
       reader = UndocumentedReader.new(undocumented_path)
       @undocumented[scope] = reader.undocumented_symbols.select do |item|
+        next unless !item.nil? && item.file
+        next if ignored_files.include? item.file
         if scope == :modified
           files_of_interest.include?(item.file)
         else
@@ -108,15 +134,23 @@ module Danger
 
     def fail_check
       undocumented(fail_scope).each do |item|
-        # rubocop:disable Style/SignalException
-        fail DEFAULT_MESSAGE, file: item.file, line: item.line
-        # rubocop:enable Style/SignalException
+        # rubocop:disable Style/SignalException, Style/GuardClause
+        if item.file.nil? || item.line.nil?
+          fail message_template % item.to_h
+        else
+          fail inline_message_template % item.to_h, file: item.file, line: item.line
+        end
+        # rubocop:enable Style/SignalException, Style/GuardClause
       end
     end
 
     def warn_check
       undocumented(warn_scope).each do |item|
-        warn DEFAULT_MESSAGE, file: item.file, line: item.line
+        if item.file.nil? || item.line.nil?
+          warn message_template % item.to_h
+        else
+          warn inline_message_template % item.to_h, file: item.file, line: item.line
+        end
       end
     end
   end
