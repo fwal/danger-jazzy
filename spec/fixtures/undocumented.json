@@ -13,6 +13,34 @@
       "symbol": "MyStruct.handleThing()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
+    },
+    {
+      "file": "/MyOtherFile.swift",
+      "line": 12,
+      "symbol": "MyStruct.handleThing()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "other"
+    },
+    {
+      "file": "/MyExtensionFile.swift",
+      "line": null,
+      "symbol": "MyClass",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/MyExtensionFile.swift",
+      "line": null,
+      "symbol": "MyClass",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": null,
+      "line": null,
+      "symbol": null,
+      "symbol_kind": null,
+      "warning": "undocumented"
     }
   ],
   "source_directory": "/"
