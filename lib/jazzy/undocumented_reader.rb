@@ -26,7 +26,9 @@ module Danger
     end
 
     def item_file(item)
-      path = Pathname.new(item['file'])
+      file = item['file']
+      return unless file
+      path = Pathname.new(file)
       path.relative_path_from(@working_path).to_s
     end
 
