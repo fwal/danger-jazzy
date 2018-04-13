@@ -15,9 +15,11 @@ module Danger
         @my_plugin = @dangerfile.jazzy
         @default_message = 'Undocumented symbol.'
         @my_plugin.path = 'spec/fixtures'
+        @my_plugin.message = @default_message
+        @my_plugin.inline_message = @default_message
       end
 
-      context 'changed files contains undocumented symbols' do
+      context 'containing changed files with undocumented symbols' do
         before do
           modified = Git::Diff::DiffFile.new(
             'base',
@@ -48,33 +50,61 @@ module Danger
         end
 
         it 'can find undocumented symbols in all files' do
-          expect(@my_plugin.undocumented(:all).length).to eq(2)
+          expect(@my_plugin.undocumented(:all).length).to eq(4)
         end
 
-        it 'fails on undocumented symbols only in modified files by default' do
+        it 'fails only in modified files by default' do
           @my_plugin.check
           expect(@dangerfile.status_report[:errors]).to eq([@default_message])
         end
 
-        it 'does not warn on undocumented symbols by default' do
+        it 'does not warn by default' do
           @my_plugin.check
           expect(@dangerfile.status_report[:warnings]).to eq([])
         end
 
-        it 'can fail on undocumented symbols in all files' do
+        it 'can fail in all files' do
           @my_plugin.check fail: :all
-          expect(@dangerfile.status_report[:errors]).to eq([@default_message, @default_message])
+          expect(@dangerfile.status_report[:errors].length).to eq(4)
         end
 
-        it 'can warn on undocumented symbols in all files' do
+        it 'can warn in all files' do
           @my_plugin.check warn: :all
-          expect(@dangerfile.status_report[:warnings]).to eq([@default_message, @default_message])
+          expect(@dangerfile.status_report[:warnings].length).to eq(4)
         end
 
         it 'does not fail if there is no undocumented json' do
           @my_plugin.path = 'spec/empty'
           @my_plugin.check
           expect(@dangerfile.status_report[:errors]).to eq([])
+        end
+
+        it 'ignores files listed in ignore' do
+          @my_plugin.ignore = ['MyFile.swift']
+          @my_plugin.check
+          expect(@dangerfile.status_report[:errors]).to eq([])
+        end
+
+        it 'uses templates for violations' do
+          @my_plugin.inline_message = '%<symbol>s in %<file>s'
+          @my_plugin.check
+          expect(@dangerfile.status_report[:errors]).to eq(
+            ['MyClass.doStuff() in MyFile.swift']
+          )
+        end
+
+        it 'can switch template' do
+          @my_plugin.ignore = ['MyFile.swift']
+          @my_plugin.message = '%<symbol>s in %<file>s'
+          @my_plugin.inline_message = '%<symbol>s'
+          @my_plugin.check fail: :all
+
+          fixture = [
+            'MyStruct.handleThing()',
+            'MyClass in MyExtensionFile.swift',
+            'MyClass in MyExtensionFile.swift'
+          ]
+          expect(@dangerfile.status_report[:errors]).to eq(fixture)
         end
       end
     end
