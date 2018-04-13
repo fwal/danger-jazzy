@@ -20,14 +20,14 @@ jazzy.check fail: :all</pre>
 jazzy.check warn: :modified</pre>
 </blockquote>
 
-<blockquote>Write a custom message for undocumented symbols in modified files.
+<blockquote>Write custom handling for undocumented symbols in modified files.
   <pre>
 jazzy.undocumented.each do |item|
     message "You forgot to document this", file:item.file, line:item.line
 end</pre>
 </blockquote>
 
-<blockquote>Write a custom message for undocumented symbols in all files.
+<blockquote>Write a custom handling for undocumented symbols in all files.
   <pre>
 jazzy.undocumented(:all).each do |item|
     message "You forgot to document this", file:item.file, line:item.line
@@ -38,6 +38,12 @@ end</pre>
 #### Attributes
 
 `path` - Path to the docs folder, defaults to 'docs/'.
+
+`ignore` - List of files to ignore, defaults to [].
+
+`message` -  Message to display, defaults to `Undocumented symbol %<symbol>s in *%<file>s*`.
+
+`inline_message` - Message to display inline, defaults to `Undocumented symbol %<symbol>s`.
 
 
 #### Methods
