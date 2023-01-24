@@ -1,3 +1,9 @@
+
+> **Warning**
+> This repository is no longer maintained.
+
+---
+
 ## danger-jazzy
 [![Build Status](https://img.shields.io/travis/fwal/danger-jazzy.svg)](https://travis-ci.org/fwal/danger-jazzy)
 [![Coveralls](https://img.shields.io/coveralls/fwal/danger-jazzy.svg)](https://coveralls.io/github/fwal/danger-jazzy)
